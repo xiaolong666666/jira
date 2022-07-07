@@ -1,22 +1,8 @@
 import { FormEvent } from "react";
-import { API_URL } from "../../constants";
-
-interface loginParams {
-  username: string;
-  password: string;
-}
+import { useAuth } from "context/auth-provider";
 
 const LoginScreen = () => {
-  const login = (params: loginParams) => {
-    fetch(`${API_URL}/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(params),
-    }).then(async (resopnse) => {
-      if (resopnse.ok) {
-      }
-    });
-  };
+  const { user, register, login, logout } = useAuth();
 
   const onHandleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,13 +10,12 @@ const LoginScreen = () => {
       .value;
     const password = (event.currentTarget.elements[1] as HTMLInputElement)
       .value;
-    login({
-      username,
-      password,
-    });
+    login({ username, password });
   };
+
   return (
     <form onSubmit={onHandleSubmit}>
+      {user ? <div>登录成功，用户名：{user?.name}</div> : null}
       <>
         <label htmlFor="username">用户名</label>
         <input type="text" id="username" />
@@ -42,6 +27,7 @@ const LoginScreen = () => {
       <>
         <button type="submit">登录</button>
       </>
+      <button onClick={logout}>退出</button>
     </form>
   );
 };
