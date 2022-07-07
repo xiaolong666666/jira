@@ -3,7 +3,6 @@ import { useAuth } from "context/auth-provider";
 
 const LoginScreen = () => {
   const { user, register, login, logout } = useAuth();
-  console.log("test cwl");
 
   const onHandleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
