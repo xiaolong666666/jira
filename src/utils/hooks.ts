@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useAuth } from "context/auth-provider";
 import { useState, useEffect, useCallback } from "react";
+import { http } from "./http";
 
 export const useMount = (callback: () => void) => {
   useEffect(
@@ -36,4 +38,10 @@ export const useArray = <T>(initialArray: T[]) => {
   };
 
   return [array, clear, removeIndex, add] as const;
+};
+
+export const useHttp = () => {
+  const { user } = useAuth();
+  return (...[endPoint, config]: Parameters<typeof http>) =>
+    http(endPoint, { token: user?.token, ...config });
 };
