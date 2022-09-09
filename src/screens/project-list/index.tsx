@@ -3,6 +3,7 @@ import { cleanObject } from "../../utils";
 import { useMount, useDebounce, useHttp } from "../../utils/hooks";
 import SearchPanel from "./search-panel";
 import List from "./list";
+import { Container } from "./style";
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useState({
@@ -23,10 +24,11 @@ export const ProjectListScreen = () => {
   });
 
   return (
-    <>
+    <Container>
+      <h1>项目列表</h1>
       <SearchPanel param={param} setParam={setParam} user={user} />
       <List list={list} user={user} />
-    </>
+    </Container>
   );
 };
 
