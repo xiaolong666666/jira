@@ -6,7 +6,7 @@ export const isVoid = (value: unknown) =>
 export const cleanObject = (obj: { [key: string]: unknown }) => {
   let result = { ...obj };
   for (let key in result) {
-    if (isFalsy(result[key])) {
+    if (isVoid(result[key])) {
       delete result[key];
     }
   }

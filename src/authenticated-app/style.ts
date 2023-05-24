@@ -7,7 +7,7 @@ export const Container = styled.div`
 `;
 
 export const Header = styled(Row)`
-  padding: 3.2rem;
+  padding: 1.6rem 3.2rem;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
   z-index: 1;
 `;
