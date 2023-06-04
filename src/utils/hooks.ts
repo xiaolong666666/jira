@@ -2,6 +2,7 @@
 import { useAuth } from "context/auth-provider";
 import { useState, useEffect, useCallback } from "react";
 import { http } from "./http";
+import { cleanObject } from "./index";
 
 export const useMount = (callback: () => void) => {
   useEffect(
@@ -42,6 +43,94 @@ export const useArray = <T>(initialArray: T[]) => {
 
 export const useHttp = () => {
   const { user } = useAuth();
-  return (...[endPoint, config]: Parameters<typeof http>) =>
-    http(endPoint, { token: user?.token, ...config });
+  return useCallback(
+    (...[endPoint, config]: Parameters<typeof http>) =>
+      http(endPoint, { token: user?.token, ...config }),
+    []
+  );
+};
+
+interface RequestProps<T> {
+  status?: "init" | "loading" | "success" | "error";
+  data?: T | null;
+  error?: Error | null;
+}
+
+interface RequestConfigProps {
+  throwOnError: boolean;
+}
+
+const initialRequestData = {
+  status: "init",
+  data: null,
+  error: null,
+};
+
+const initialRequestConfig = {
+  throwOnError: false,
+};
+
+export const useRequest = <T>(
+  initData?: RequestProps<T>,
+  initConfig?: RequestConfigProps
+) => {
+  const config = { ...initialRequestConfig, ...initConfig };
+  const [state, setState] = useState<RequestProps<T>>({
+    ...initialRequestData,
+    ...initData,
+    status: "init",
+  });
+
+  const onSuccess = (data: T) =>
+    setState({
+      data,
+      status: "success",
+      error: null,
+    });
+
+  const onError = (error: Error) =>
+    setState({
+      error,
+      status: "error",
+      data: null,
+    });
+
+  const run = (promise: Promise<T>) => {
+    if (!promise || !promise.then) {
+      throw new Error("请传入 Promise 类型数据");
+    }
+    setState({ ...state, status: "loading" });
+    return promise
+      .then((data: T) => {
+        onSuccess(data);
+        return data;
+      })
+      .catch((error) => {
+        onError(error);
+        return config.throwOnError ? Promise.reject(error) : error;
+      });
+  };
+
+  return {
+    isInit: state.status === "init",
+    isLoading: state.status === "loading",
+    isSuccess: state.status === "success",
+    isError: state.status === "error",
+    run,
+    onSuccess,
+    onError,
+    ...state,
+    setState,
+  };
+};
+
+export const useProjects = <Project>(params?: Partial<Project>) => {
+  const { run, ...result } = useRequest<Project[]>();
+  const client = useHttp();
+
+  useEffect(() => {
+    run(client("projects", { data: cleanObject(params || {}) }));
+  }, [client, params]);
+
+  return result;
 };

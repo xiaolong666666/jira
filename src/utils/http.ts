@@ -44,7 +44,7 @@ export const http = (
       if (response.ok) {
         return data;
       } else {
-        return Promise.reject(data);
+        return Promise.reject(await data);
       }
     });
 };

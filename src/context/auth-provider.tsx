@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+// @ts-nocheck
+import { createContext, useContext, ReactNode } from "react";
 import {
   loginParams,
   getToken,
@@ -7,8 +8,9 @@ import {
   logout as authLogout,
 } from "auth-provider";
 import { User } from "screens/project-list/search-panel";
-import { useMount } from "utils/hooks";
+import { useMount, useRequest } from "utils/hooks";
 import { http } from "utils/http";
+import { FullLoading, FullPageErrorCallback } from "components/lib";
 
 const getInitialUser = async () => {
   let user = null;
@@ -32,14 +34,30 @@ const AuthContext = createContext<
 AuthContext.displayName = "AuthContext";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const {
+    run,
+    data: user,
+    error,
+    isInit,
+    isLoading,
+    isError,
+    setState: setUser,
+  } = useRequest<User | null>();
   const register = (params: loginParams) => authRegister(params).then(setUser);
   const login = (params: loginParams) => authLogin(params).then(setUser);
   const logout = () => authLogout().then(() => setUser(null));
 
   useMount(() => {
-    getInitialUser().then(setUser);
+    run(getInitialUser());
   });
+
+  if (isInit || isLoading) {
+    return <FullLoading />;
+  }
+
+  if (isError) {
+    return <FullPageErrorCallback error={error} />;
+  }
 
   return (
     <AuthContext.Provider

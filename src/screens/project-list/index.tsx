@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
-import { cleanObject } from "../../utils";
-import { useMount, useDebounce, useHttp } from "../../utils/hooks";
+import { useState } from "react";
+import { Typography } from "antd";
+import { useMount, useDebounce, useHttp, useProjects } from "../../utils/hooks";
 import SearchPanel from "./search-panel";
-import List from "./list";
+import List, { Project } from "./list";
 import { Container } from "./style";
 
 export const ProjectListScreen = () => {
@@ -11,13 +11,9 @@ export const ProjectListScreen = () => {
     personId: "",
   });
   const [user, setUser] = useState([]);
-  const [list, setList] = useState([]);
   const debounceParam = useDebounce(param, 2000);
   const client = useHttp();
-
-  useEffect(() => {
-    client("projects", { data: cleanObject(debounceParam) }).then(setList);
-  }, [client, debounceParam]);
+  const { data: list, isLoading, error } = useProjects<Project>(debounceParam);
 
   useMount(() => {
     client("users").then(setUser);
@@ -27,7 +23,10 @@ export const ProjectListScreen = () => {
     <Container>
       <h1>项目列表</h1>
       <SearchPanel param={param} setParam={setParam} user={user} />
-      <List list={list} user={user} />
+      {error && (
+        <Typography.Text type="danger">{error.message}</Typography.Text>
+      )}
+      <List loading={isLoading} dataSource={list || []} user={user} />
     </Container>
   );
 };
