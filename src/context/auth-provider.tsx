@@ -44,8 +44,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setState: setUser,
   } = useRequest<User | null>();
   const register = (params: loginParams) => authRegister(params).then(setUser);
-  const login = (params: loginParams) => authLogin(params).then(setUser);
-  const logout = () => authLogout().then(() => setUser(null));
+  const login = (params: loginParams) =>
+    authLogin(params).then((data) => setUser({ data }));
+  const logout = () => authLogout().then(() => setUser({ data: null }));
 
   useMount(() => {
     run(getInitialUser());

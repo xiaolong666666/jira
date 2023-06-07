@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "context/auth-provider";
-import { useState, useEffect, useCallback } from "react";
 import { http } from "./http";
 import { cleanObject } from "./index";
 
@@ -133,4 +133,22 @@ export const useProjects = <Project>(params?: Partial<Project>) => {
   }, [client, params]);
 
   return result;
+};
+
+export const useDocumentTitle = (
+  title: string,
+  keepOnUnMount: boolean = false
+) => {
+  const oldTitle = useRef(document.title).current;
+
+  useEffect(() => {
+    document.title = title;
+  });
+
+  useEffect(
+    () => () => {
+      if (!keepOnUnMount) document.title = oldTitle;
+    },
+    [keepOnUnMount]
+  );
 };

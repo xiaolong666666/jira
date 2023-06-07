@@ -1,11 +1,15 @@
 import { Dropdown, Menu, Button } from "antd";
 import ProjectList from "screens/project-list";
 import { useAuth } from "context/auth-provider";
+import { useDocumentTitle } from "utils/hooks";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Header, HeaderLeft, HeaderRight, Main } from "./style";
 
 const AuthEnticatedAPP = () => {
   const { user, logout } = useAuth();
+
+  useDocumentTitle("项目列表");
+
   return (
     <>
       <Header between>
