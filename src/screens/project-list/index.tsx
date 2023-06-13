@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { Typography } from "antd";
-import { useMount, useDebounce, useHttp, useProjects } from "../../utils/hooks";
+import {
+  useMount,
+  useDebounce,
+  useHttp,
+  useProjects,
+  useUrlQueryParams,
+} from "../../utils/hooks";
 import SearchPanel from "./search-panel";
 import List, { Project } from "./list";
 import { Container } from "./style";
 
 export const ProjectListScreen = () => {
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
+  const [param, setParam] = useUrlQueryParams(["name", "personId"]);
   const [user, setUser] = useState([]);
   const debounceParam = useDebounce(param, 2000);
   const client = useHttp();
@@ -30,5 +33,7 @@ export const ProjectListScreen = () => {
     </Container>
   );
 };
+
+ProjectListScreen.whyDidYouRender = false;
 
 export default ProjectListScreen;

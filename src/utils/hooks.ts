@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
+import { URLSearchParamsInit } from "react-router-dom";
 import { useAuth } from "context/auth-provider";
 import { http } from "./http";
 import { cleanObject } from "./index";
@@ -151,4 +153,25 @@ export const useDocumentTitle = (
     },
     [keepOnUnMount]
   );
+};
+
+export const useUrlQueryParams = <T extends string>(keys: T[]) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  return [
+    useMemo(
+      () =>
+        keys.reduce(
+          (prev, key) => ({ ...prev, [key]: searchParams.get(key) || "" }),
+          {} as { [key in T]: string }
+        ),
+      [setSearchParams]
+    ),
+    (params: Partial<{ [key in T]: unknown }>) => {
+      let o = cleanObject({
+        ...Object.fromEntries(searchParams),
+        ...params,
+      }) as URLSearchParamsInit;
+      return setSearchParams(o);
+    },
+  ] as const;
 };

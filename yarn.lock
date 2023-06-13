@@ -1081,6 +1081,13 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@babel/runtime@^7.7.6":
+  version "7.22.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.22.3.tgz#0a7fce51d43adbf0f7b517a71f4c3aaca92ebcbb"
+  integrity sha512-XsDuspWKLUsxwCp6r7EhsExHtYfbe5oAGQ19kqngTdCPUoPQzOPdUbD/pB9PJiwb2ptYKQDjSJT3R6dC+EPqfQ==
+  dependencies:
+    regenerator-runtime "^0.13.11"
+
 "@babel/template@^7.16.7", "@babel/template@^7.3.3":
   version "7.16.7"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.16.7.tgz"
@@ -1923,6 +1930,11 @@
     schema-utils "^3.0.0"
     source-map "^0.7.3"
 
+"@remix-run/router@1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-1.6.3.tgz#8205baf6e17ef93be35bf62c37d2d594e9be0dad"
+  integrity sha512-EXJysQ7J3veRECd0kZFQwYYd5sJMcq2O/m60zu1W2l3oVQ9xtub8jTOtYRE0+M2iomyG/W3Ps7+vp2kna0C27Q==
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.npmjs.org/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz"
@@ -2720,6 +2732,13 @@
   dependencies:
     "@webassemblyjs/ast" "1.11.1"
     "@xtuc/long" "4.2.2"
+
+"@welldone-software/why-did-you-render@^7.0.1":
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/@welldone-software/why-did-you-render/-/why-did-you-render-7.0.1.tgz#09f487d84844bd8e66435843c2e0305702e61efb"
+  integrity sha512-Qe/8Xxa2G+LMdI6VoazescPzjjkHYduCDa8aHOJR50e9Bgs8ihkfMBY+ev7B4oc3N59Zm547Sgjf8h5y0FOyoA==
+  dependencies:
+    lodash "^4"
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -5688,6 +5707,13 @@ headers-utils@^1.2.0:
   resolved "https://registry.yarnpkg.com/headers-utils/-/headers-utils-1.2.5.tgz#899d6a76b21bcbe18d6108f56136fdbd4f30c404"
   integrity sha512-DAzV5P/pk3wTU/8TLZN+zFTDv4Xa1QDTU8pRvovPetcOMbmqq8CwsAvZBLPZHH6usxyy31zMp7I4aCYb6XIf6w==
 
+history@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/history/-/history-5.3.0.tgz#1548abaa245ba47992f063a0783db91ef201c73b"
+  integrity sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==
+  dependencies:
+    "@babel/runtime" "^7.7.6"
+
 hoist-non-react-statics@^3.3.1:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
@@ -7173,7 +7199,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz"
   integrity sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==
 
-lodash@4, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
+lodash@4, lodash@^4, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -9388,6 +9414,21 @@ react-refresh@^0.11.0:
   version "0.11.0"
   resolved "https://registry.npmjs.org/react-refresh/-/react-refresh-0.11.0.tgz"
   integrity sha512-F27qZr8uUqwhWZboondsPx8tnC3Ct3SxZA3V5WyEvujRyyNv0VYPhoBg1gZ8/MV5tubQp76Trw8lTv9hzRBa+A==
+
+react-router-dom@6:
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-6.12.0.tgz#372279caaaa1ffb0204926c83e93a139b112d861"
+  integrity sha512-UzLwZ3ZVaDr6YV0HdjwxuwtDKgwpJx9o1ea9fU0HV4tTvzdB8WPHzlLFMo5orchpIS84e8G4Erlhu7Rl84XDFQ==
+  dependencies:
+    "@remix-run/router" "1.6.3"
+    react-router "6.12.0"
+
+react-router@6, react-router@6.12.0:
+  version "6.12.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-6.12.0.tgz#1afae9219c24c8611809469d7a386c8023ade39a"
+  integrity sha512-/tCGtLq9umxRvbYeIx3j94CmpQfue0E3qnetVm9luKhu58cR4t+3O4ZrQXBdXfJrBATOAj+wF/1ihJJQI8AoTw==
+  dependencies:
+    "@remix-run/router" "1.6.3"
 
 react-scripts@5.0.1:
   version "5.0.1"

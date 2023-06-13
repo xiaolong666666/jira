@@ -1,43 +1,28 @@
-import { Dropdown, Menu, Button } from "antd";
+import { BrowserRouter as Router } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router";
 import ProjectList from "screens/project-list";
-import { useAuth } from "context/auth-provider";
+import Project from "screens/project";
 import { useDocumentTitle } from "utils/hooks";
-import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
-import { Header, HeaderLeft, HeaderRight, Main } from "./style";
+import HeaderPage from "./HeaderPage";
+import { Main } from "./style";
 
 const AuthEnticatedAPP = () => {
-  const { user, logout } = useAuth();
-
   useDocumentTitle("项目列表");
 
   return (
     <>
-      <Header between>
-        <HeaderLeft gap>
-          <SoftwareLogo width="18rem" color="rgb(38, 132, 255)" />
-          <h2>项目</h2>
-          <h2>用户</h2>
-        </HeaderLeft>
-        <HeaderRight>
-          <Dropdown
-            overlay={
-              <Menu>
-                <Menu.Item>
-                  <Button type="link" onClick={logout}>
-                    登出
-                  </Button>
-                </Menu.Item>
-              </Menu>
-            }
-          >
-            <Button type="link" onClick={(e) => e.preventDefault()}>
-              Hi,{user?.name}
-            </Button>
-          </Dropdown>
-        </HeaderRight>
-      </Header>
+      <HeaderPage />
       <Main>
-        <ProjectList />
+        <Router>
+          <Routes>
+            <Route path="/projects" element={<ProjectList />} />
+            <Route path="/projects/:projectId/*" element={<Project />} />
+            <Route
+              path="*"
+              element={<Navigate to="/projects" replace={true} />}
+            />
+          </Routes>
+        </Router>
       </Main>
     </>
   );
