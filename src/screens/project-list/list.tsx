@@ -4,9 +4,9 @@ import { Link } from "react-router-dom";
 import { User } from "./search-panel";
 
 export interface Project {
-  id: string;
+  id: number;
   name: string;
-  personId: string;
+  personId: number;
   pin: string;
   organization: string;
   created: number;
@@ -32,7 +32,7 @@ export const List = ({ user, ...tableProps }: ListProps) => {
     },
     {
       title: "负责人",
-      render: (_: any, projects: { personId: string }) => (
+      render: (_: any, projects: { personId: number }) => (
         <span>
           {user.find((u) => u.id === projects.personId)?.name || "未知"}
         </span>

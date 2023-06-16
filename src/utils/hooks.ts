@@ -2,9 +2,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { URLSearchParamsInit } from "react-router-dom";
+import { useQuery } from "react-query";
 import { useAuth } from "context/auth-provider";
 import { http } from "./http";
 import { cleanObject } from "./index";
+import { User } from "screens/project-list/search-panel";
 
 export const useMount = (callback: () => void) => {
   useEffect(
@@ -152,6 +154,14 @@ export const useDocumentTitle = (
       if (!keepOnUnMount) document.title = oldTitle;
     },
     [keepOnUnMount]
+  );
+};
+
+export const useUser = (param?: Partial<User>) => {
+  const client = useHttp();
+
+  return useQuery<User[]>(["users", param], () =>
+    client("users", { data: param })
   );
 };
 

@@ -10,9 +10,10 @@ import {
 import SearchPanel from "./search-panel";
 import List, { Project } from "./list";
 import { Container } from "./style";
+import { useProjectsSearchParams } from "./utils";
 
 export const ProjectListScreen = () => {
-  const [param, setParam] = useUrlQueryParams(["name", "personId"]);
+  const [param, setParam] = useProjectsSearchParams();
   const [user, setUser] = useState([]);
   const debounceParam = useDebounce(param, 2000);
   const client = useHttp();
