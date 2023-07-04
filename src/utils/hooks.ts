@@ -7,6 +7,7 @@ import { useAuth } from "context/auth-provider";
 import { http } from "./http";
 import { cleanObject } from "./index";
 import { User } from "screens/project-list/search-panel";
+import { Project } from "screens/project-list/list";
 
 export const useMount = (callback: () => void) => {
   useEffect(
@@ -84,6 +85,7 @@ export const useRequest = <T>(
     ...initData,
     status: "init",
   });
+  const [retry, setRetry] = useState(() => () => {});
 
   const onSuccess = (data: T) =>
     setState({
@@ -99,9 +101,15 @@ export const useRequest = <T>(
       data: null,
     });
 
-  const run = (promise: Promise<T>) => {
+  const run = (
+    promise: Promise<T>,
+    runConfig?: { retry: () => Promise<T> }
+  ) => {
     if (!promise || !promise.then) {
       throw new Error("请传入 Promise 类型数据");
+    }
+    if (runConfig?.retry) {
+      setRetry(() => () => run(runConfig?.retry(), runConfig));
     }
     setState({ ...state, status: "loading" });
     return promise
@@ -123,6 +131,7 @@ export const useRequest = <T>(
     run,
     onSuccess,
     onError,
+    retry,
     ...state,
     setState,
   };
@@ -131,12 +140,47 @@ export const useRequest = <T>(
 export const useProjects = <Project>(params?: Partial<Project>) => {
   const { run, ...result } = useRequest<Project[]>();
   const client = useHttp();
+  const fetchProjects = () =>
+    client("projects", { data: cleanObject(params || {}) });
 
   useEffect(() => {
-    run(client("projects", { data: cleanObject(params || {}) }));
+    run(fetchProjects(), { retry: fetchProjects });
   }, [client, params]);
 
   return result;
+};
+
+export const useEditProjects = () => {
+  const { run, ...restResult } = useRequest();
+  const client = useHttp();
+  const mutate = (params: Partial<Project>) =>
+    run(
+      client(`projects/${params.id}`, {
+        data: params,
+        method: "PATCH",
+      })
+    );
+
+  return {
+    mutate,
+    ...restResult,
+  };
+};
+
+export const useAddProjects = () => {
+  const { run, ...restResult } = useRequest();
+  const client = useHttp();
+  const mutate = (params: Partial<Project>) =>
+    run(
+      client(`projects/${params.id}`, {
+        data: params,
+        method: "POST",
+      })
+    );
+  return {
+    mutate,
+    ...restResult,
+  };
 };
 
 export const useDocumentTitle = (

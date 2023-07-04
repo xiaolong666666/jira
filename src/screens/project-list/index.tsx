@@ -17,7 +17,12 @@ export const ProjectListScreen = () => {
   const [user, setUser] = useState([]);
   const debounceParam = useDebounce(param, 2000);
   const client = useHttp();
-  const { data: list, isLoading, error } = useProjects<Project>(debounceParam);
+  const {
+    data: list,
+    isLoading,
+    error,
+    retry,
+  } = useProjects<Project>(debounceParam);
 
   useMount(() => {
     client("users").then(setUser);
@@ -30,7 +35,12 @@ export const ProjectListScreen = () => {
       {error && (
         <Typography.Text type="danger">{error.message}</Typography.Text>
       )}
-      <List loading={isLoading} dataSource={list || []} user={user} />
+      <List
+        loading={isLoading}
+        dataSource={list || []}
+        user={user}
+        refresh={retry}
+      />
     </Container>
   );
 };

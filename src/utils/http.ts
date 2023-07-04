@@ -25,7 +25,7 @@ export const http = (
 
   if (config.method === GET) {
     endPoint += `?${qs.stringify(data)}`;
-  } else if (config.method === POST) {
+  } else {
     Object.assign(config, {
       body: JSON.stringify(data || {}),
     });
