@@ -86,6 +86,7 @@ export const useRequest = <T>(
     status: "init",
   });
   const [retry, setRetry] = useState(() => () => {});
+  const mountRef = useMountRef();
 
   const onSuccess = (data: T) =>
     setState({
@@ -114,7 +115,7 @@ export const useRequest = <T>(
     setState({ ...state, status: "loading" });
     return promise
       .then((data: T) => {
-        onSuccess(data);
+        mountRef.current && onSuccess(data);
         return data;
       })
       .catch((error) => {
@@ -228,4 +229,17 @@ export const useUrlQueryParams = <T extends string>(keys: T[]) => {
       return setSearchParams(o);
     },
   ] as const;
+};
+
+export const useMountRef = () => {
+  const mountRef = useRef(false);
+
+  useEffect(() => {
+    mountRef.current = true;
+    return () => {
+      mountRef.current = false;
+    };
+  });
+
+  return mountRef;
 };
