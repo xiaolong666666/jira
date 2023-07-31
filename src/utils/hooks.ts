@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import { URLSearchParamsInit } from "react-router-dom";
@@ -51,7 +50,7 @@ export const useHttp = () => {
   return useCallback(
     (...[endPoint, config]: Parameters<typeof http>) =>
       http(endPoint, { token: user?.token, ...config }),
-    []
+    [user?.token]
   );
 };
 
@@ -88,41 +87,47 @@ export const useRequest = <T>(
   const [retry, setRetry] = useState(() => () => {});
   const mountRef = useMountRef();
 
-  const onSuccess = (data: T) =>
-    setState({
-      data,
-      status: "success",
-      error: null,
-    });
+  const onSuccess = useCallback(
+    (data: T) =>
+      setState({
+        data,
+        status: "success",
+        error: null,
+      }),
+    []
+  );
 
-  const onError = (error: Error) =>
-    setState({
-      error,
-      status: "error",
-      data: null,
-    });
+  const onError = useCallback(
+    (error: Error) =>
+      setState({
+        error,
+        status: "error",
+        data: null,
+      }),
+    []
+  );
 
-  const run = (
-    promise: Promise<T>,
-    runConfig?: { retry: () => Promise<T> }
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error("请传入 Promise 类型数据");
-    }
-    if (runConfig?.retry) {
-      setRetry(() => () => run(runConfig?.retry(), runConfig));
-    }
-    setState({ ...state, status: "loading" });
-    return promise
-      .then((data: T) => {
-        mountRef.current && onSuccess(data);
-        return data;
-      })
-      .catch((error) => {
-        onError(error);
-        return config.throwOnError ? Promise.reject(error) : error;
-      });
-  };
+  const run = useCallback(
+    (promise: Promise<T>, runConfig?: { retry: () => Promise<T> }) => {
+      if (!promise || !promise.then) {
+        throw new Error("请传入 Promise 类型数据");
+      }
+      if (runConfig?.retry) {
+        setRetry(() => () => run(runConfig?.retry(), runConfig));
+      }
+      setState((prevState) => ({ ...prevState, status: "loading" }));
+      return promise
+        .then((data: T) => {
+          mountRef.current && onSuccess(data);
+          return data;
+        })
+        .catch((error) => {
+          onError(error);
+          return config.throwOnError ? Promise.reject(error) : error;
+        });
+    },
+    [config.throwOnError, mountRef, onError, onSuccess]
+  );
 
   return {
     isInit: state.status === "init",
@@ -141,12 +146,14 @@ export const useRequest = <T>(
 export const useProjects = <Project>(params?: Partial<Project>) => {
   const { run, ...result } = useRequest<Project[]>();
   const client = useHttp();
-  const fetchProjects = () =>
-    client("projects", { data: cleanObject(params || {}) });
+  const fetchProjects = useCallback(
+    () => client("projects", { data: cleanObject(params || {}) }),
+    [client, params]
+  );
 
   useEffect(() => {
     run(fetchProjects(), { retry: fetchProjects });
-  }, [client, params]);
+  }, [client, fetchProjects, run]);
 
   return result;
 };
@@ -198,7 +205,7 @@ export const useDocumentTitle = (
     () => () => {
       if (!keepOnUnMount) document.title = oldTitle;
     },
-    [keepOnUnMount]
+    [keepOnUnMount, oldTitle]
   );
 };
 
@@ -212,14 +219,15 @@ export const useUser = (param?: Partial<User>) => {
 
 export const useUrlQueryParams = <T extends string>(keys: T[]) => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [stateKeys] = useState(keys);
   return [
     useMemo(
       () =>
-        keys.reduce(
+        stateKeys.reduce(
           (prev, key) => ({ ...prev, [key]: searchParams.get(key) || "" }),
           {} as { [key in T]: string }
         ),
-      [setSearchParams]
+      [stateKeys, searchParams]
     ),
     (params: Partial<{ [key in T]: unknown }>) => {
       let o = cleanObject({
