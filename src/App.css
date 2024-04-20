@@ -5,3 +5,8 @@ html {
 html body #root .App {
   min-height: 100vh;
 }
+
+/* 改写 Drawer header colse 按钮位置 */
+.ant-drawer-header-title {
+  flex-direction: row-reverse;
+}

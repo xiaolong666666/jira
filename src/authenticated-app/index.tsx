@@ -5,17 +5,24 @@ import Project from "screens/project";
 import { useDocumentTitle } from "utils/hooks";
 import HeaderPage from "./HeaderPage";
 import { Main } from "./style";
+import { useState } from "react";
+import ProjectModalScreen from "screens/project-list/project-modal";
 
 const AuthEnticatedAPP = () => {
   useDocumentTitle("项目列表");
-
+  const [projectModalVisible, setProjectModalVisible] = useState(false);
   return (
     <>
-      <HeaderPage />
+      <HeaderPage setProjectModalVisible={setProjectModalVisible} />
       <Main>
         <Router>
           <Routes>
-            <Route path="/projects" element={<ProjectList />} />
+            <Route
+              path="/projects"
+              element={
+                <ProjectList setProjectModalVisible={setProjectModalVisible} />
+              }
+            />
             <Route path="/projects/:projectId/*" element={<Project />} />
             <Route
               path="*"
@@ -23,6 +30,10 @@ const AuthEnticatedAPP = () => {
             />
           </Routes>
         </Router>
+        <ProjectModalScreen
+          open={projectModalVisible}
+          onClose={() => setProjectModalVisible(false)}
+        />
       </Main>
     </>
   );

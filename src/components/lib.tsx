@@ -1,4 +1,4 @@
-import { Spin, Typography } from "antd";
+import { Button, Spin, Typography } from "antd";
 import styled from "@emotion/styled";
 import { DevTools } from "jira-dev-tool";
 
@@ -42,3 +42,7 @@ export const FullPageErrorCallback = ({
     <Typography.Text type="danger">{error?.message}</Typography.Text>
   </FullPage>
 );
+
+export const ButtonNotPadding = styled(Button)`
+  padding: 0;
+`;

@@ -1,9 +1,10 @@
-import { Table, TableProps } from "antd";
+import { Menu, Dropdown, Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import { User } from "./search-panel";
 import { useEditProjects } from "utils/hooks";
 import Pin from "components/pin";
+import { ButtonNotPadding } from "components/lib";
 
 export interface Project {
   id: number;
@@ -17,9 +18,15 @@ export interface Project {
 interface ListProps extends TableProps<Project> {
   user: User[];
   refresh: () => void;
+  setProjectModalVisible: (isOpen: boolean) => void;
 }
 
-export const List = ({ user, refresh, ...tableProps }: ListProps) => {
+export const List = ({
+  user,
+  refresh,
+  setProjectModalVisible,
+  ...tableProps
+}: ListProps) => {
   const { mutate } = useEditProjects();
   // 柯理化处理（id先拿到, pin onChange时才能确定）
   const onSwitchPin = (id: number) => (pin: boolean) =>
@@ -59,6 +66,27 @@ export const List = ({ user, refresh, ...tableProps }: ListProps) => {
             ? dayjs(projects.created).format("YYYY-MM-DD")
             : "无"}
         </span>
+      ),
+    },
+    {
+      title: "操作",
+      render: (_: any, projects: any) => (
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item>
+                <ButtonNotPadding
+                  type="link"
+                  onClick={() => setProjectModalVisible(true)}
+                >
+                  编辑
+                </ButtonNotPadding>
+              </Menu.Item>
+            </Menu>
+          }
+        >
+          <ButtonNotPadding type="link">...</ButtonNotPadding>
+        </Dropdown>
       ),
     },
   ];
